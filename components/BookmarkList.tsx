@@ -8,38 +8,7 @@ export default function BookmarkList() {
 
   const [bookmarks, setBookmarks] = useState<any[]>([]);
 
-  // const fetchBookmarks = async () => {
-  //   const { data, error } = await supabase
-  //     .from("bookmarks")
-  //     .select("*")
-  //     .order("created_at", { ascending: false });
-
-  //   console.log("DATA:", data);
-  //   console.log("ERROR:", error);
-
-  //   if (data) setBookmarks(data);
-  // };
-
-  // useEffect(() => {
-  //   fetchBookmarks();
-
-  //   const channel = supabase
-  //     .channel("realtime-bookmarks")
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "*",
-  //         schema: "public",
-  //         table: "bookmarks",
-  //       },
-  //       () => fetchBookmarks()
-  //     )
-  //     .subscribe();
-
-  //   return () => {
-  //     supabase.removeChannel(channel);
-  //   };
-  // }, []);
+  
     async function fetchBookmarks() {
     const {
       data: { session },
