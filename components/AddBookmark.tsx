@@ -8,27 +8,42 @@ export default function AddBookmark() {
   const [url, setUrl] = useState('');
 
   const addBookmark = async () => {
-    const { data: userData } = await supabase.auth.getUser();
+  // Trim inputs
+  const cleanTitle = title.trim();
+  const cleanUrl = url.trim();
 
-    if (!userData.user) {
-      alert('Not logged in');
-      return;
-    }
+  // Basic validation
+  if (!cleanTitle || !cleanUrl) {
+    alert("Title and URL cannot be empty");
+    return;
+  }
 
-    const { error } = await supabase.from('bookmarks').insert({
-      title,
-      url,
-      user_id: userData.user.id
-    });
+  if (!cleanUrl.startsWith("http")) {
+    alert("URL must start with http:// or https://");
+    return;
+  }
 
-    if (error) {
-      alert(error.message);
-    } else {
-      setTitle('');
-      setUrl('');
-      alert('Bookmark added!');
-    }
-  };
+  const { data: userData } = await supabase.auth.getUser();
+
+  if (!userData.user) {
+    alert("Not logged in");
+    return;
+  }
+
+  const { error } = await supabase.from("bookmarks").insert({
+    title: cleanTitle,
+    url: cleanUrl,
+    user_id: userData.user.id,
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    setTitle("");
+    setUrl("");
+  }
+};
+
 
   return (
     <div className="mt-6">
