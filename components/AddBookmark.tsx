@@ -1,73 +1,5 @@
 'use client';
 
-// import { useState } from 'react';
-// import { supabase } from '@/lib/supabaseClient';
-
-// export default function AddBookmark() {
-//   const [title, setTitle] = useState('');
-//   const [url, setUrl] = useState('');
-
-//   const addBookmark = async () => {
-//   // Trim inputs
-//   const cleanTitle = title.trim();
-//   const cleanUrl = url.trim();
-
-//   // Basic validation
-//   if (!cleanTitle || !cleanUrl) {
-//     alert("Title and URL cannot be empty");
-//     return;
-//   }
-
-//   if (!cleanUrl.startsWith("http")) {
-//     alert("URL must start with http:// or https://");
-//     return;
-//   }
-
-//   const { data: userData } = await supabase.auth.getUser();
-
-//   if (!userData.user) {
-//     alert("Not logged in");
-//     return;
-//   }
-
-//   const { error } = await supabase.from("bookmarks").insert({
-//     title: cleanTitle,
-//     url: cleanUrl,
-//     user_id: userData.user.id,
-//   });
-
-//   if (error) {
-//     alert(error.message);
-//   } else {
-//     setTitle("");
-//     setUrl("");
-//   }
-// };
-
-
-//   return (
-//     <div className="mt-6">
-//       <input
-//         placeholder="Title"
-//         value={title}
-//         onChange={e => setTitle(e.target.value)}
-//         className="border p-2 block mb-2"
-//       />
-
-//       <input
-//         placeholder="URL"
-//         value={url}
-//         onChange={e => setUrl(e.target.value)}
-//         className="border p-2 block mb-2"
-//       />
-
-//       <button onClick={addBookmark} className="bg-black text-white px-4 py-2">
-//         Add Bookmark
-//       </button>
-//     </div>
-//   );
-// }
-
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -78,51 +10,54 @@ export default function AddBookmark() {
   const [errorMsg, setErrorMsg] = useState("");
 
   const addBookmark = async () => {
-    setErrorMsg("");
+  setErrorMsg("");
 
-    const cleanTitle = title.trim();
-    const cleanUrl = url.trim();
+  let cleanTitle = title.trim();
+  let cleanUrl = url.trim();
 
-    if (!cleanTitle || !cleanUrl) {
-      setErrorMsg("Title and URL required");
-      return;
-    }
+  if (!cleanTitle || !cleanUrl) {
+    setErrorMsg("Title and URL are required");
+    return;
+  }
 
-    try {
-      const parsed = new URL(cleanUrl);
-      if (!["http:", "https:"].includes(parsed.protocol)) {
-        setErrorMsg("Invalid URL");
-        return;
-      }
-    } catch {
-      setErrorMsg("Invalid URL");
-      return;
-    }
+  // Auto add https if missing
+  if (!cleanUrl.startsWith("http://") && !cleanUrl.startsWith("https://")) {
+    cleanUrl = "https://" + cleanUrl;
+  }
 
-    setLoading(true);
+  // Final URL validation
+  try {
+    new URL(cleanUrl);
+  } catch {
+    setErrorMsg("Invalid URL format");
+    return;
+  }
 
-    try {
-      const { data: userData } = await supabase.auth.getUser();
+  setLoading(true);
 
-      if (!userData.user) throw new Error("Not logged in");
+  try {
+    const { data: userData } = await supabase.auth.getUser();
 
-      const { error } = await supabase.from("bookmarks").insert({
-        title: cleanTitle,
-        url: cleanUrl,
-        user_id: userData.user.id,
-      });
+    if (!userData.user) throw new Error("Not logged in");
 
-      if (error) throw error;
+    const { error } = await supabase.from("bookmarks").insert({
+      title: cleanTitle,
+      url: cleanUrl,
+      user_id: userData.user.id,
+    });
 
-      setTitle("");
-      setUrl("");
-    } catch (err: any) {
-      console.error(err);
-      setErrorMsg(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (error) throw error;
+
+    setTitle("");
+    setUrl("");
+  } catch (err: any) {
+    console.error(err);
+    setErrorMsg(err.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="mt-6">

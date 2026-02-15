@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function BookmarkList() {
-  console.log("BookmarkList mounted");
 
   const [bookmarks, setBookmarks] = useState<any[]>([]);
 
