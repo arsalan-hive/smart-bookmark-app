@@ -92,3 +92,16 @@ a)Frontend: trim inputs and validate before sending.
 
 b)Backend (Supabase): mark the columns NOT NULL and add CHECK constraints to reject blank text.
 
+**Testing checklist I used**
+
+- Sign in/out flows
+
+- Add bookmark (valid + invalid URL)
+
+- Delete bookmark 
+
+- Multi-tab realtime: add/delete in Tab A -> reflect in Tab B
+
+- Session persistence on reload
+
+- Deploy to Vercel and verify production OAuth redirect settings
