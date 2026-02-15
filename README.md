@@ -1,3 +1,7 @@
+**Smart Bookmar App**
+
+Live vercel link : https://smart-bookmark-app-nine-gules.vercel.app/
+
 A small bookmark manager built with Next.js (App Router), Supabase (Auth, Database, Realtime), Tailwind for UI, and deployed to Vercel.
 This README documents what I built, how to run it locally, and most importantly the problems I ran into and how I solved them.
 
